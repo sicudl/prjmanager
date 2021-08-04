@@ -12,5 +12,15 @@
   "dependencies": {
     "directus": "^9.0.0-rc.85",
     "pg": "^8.6.0"
-  }
+  },
+  "devDependencies": {
+    "@directus/extension-sdk": "^9.0.0-rc.88"
+  },
+  "directus:extension": {
+	"type": "module",
+	"path": "dist/index.js",
+	"source": "src/index.js",
+	"host": "^9.0.0-rc.87",
+	"hidden": false
+  }  
 }
