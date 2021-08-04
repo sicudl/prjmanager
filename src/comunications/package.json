@@ -1,0 +1,22 @@
+{
+  "name": "prjmanager-comunications-builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@directus/extension-sdk": "^9.0.0-rc.87"
+  },
+  "directus:extension": {
+	"type": "module",
+	"path": "../../extensions/modules/comunications/index.js",
+	"source": "index.js",
+	"host": "^9.0.0-rc.87",
+	"hidden": false
+  } 
+}
