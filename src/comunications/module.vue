@@ -25,6 +25,13 @@
 			<v-button v-on:click="sendComunication">Click me!</v-button>
 		</div>
 	</div>
+	<v-dialog v-model="comunicationSent">
+		<v-sheet>
+			<h2>La comunicació s'ha enviat correctament</h2>
+			<v-button v-on:click="comunicationSent=false">Ok</v-button>
+		</v-sheet>
+	</v-dialog>
+
   </private-view>
 </template>
 
@@ -75,6 +82,8 @@ export default {
       stakeholders: [],
 	  title: "",
 	  body: "",
+	  comunicationSent: false,
+	  comunicationError: false,
     };
   },
   methods: {
@@ -89,9 +98,12 @@ export default {
 			recipients : this.selectedStakeholders.map (stakeholder => { return {"stakeholders_id": stakeholder}} ),
 		}
 		this.system.api.post("/items/comunication",comunication).then((res) => {
-			console.log ("OK");
+			this.title ="";
+			this.body=""
+			this.selectedStakeholders = [];
+			this.comunicationSent = true;
 		}).catch ((error) => {
-			console.log (error);
+			
 		});
 	},
 	loadStakeholders: function (projectId) {

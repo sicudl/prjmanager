@@ -13,10 +13,10 @@
     "@directus/extension-sdk": "^9.0.0-rc.87"
   },
   "directus:extension": {
-	"type": "module",
-	"path": "../../extensions/modules/comunications/index.js",
-	"source": "index.js",
-	"host": "^9.0.0-rc.87",
-	"hidden": false
-  } 
+    "type": "module",
+    "path": "../../extensions/modules/comunications/index.js",
+    "source": "index.js",
+    "host": "^9.0.0-rc.87",
+    "hidden": false
+  }
 }
