@@ -1,12 +1,15 @@
 module.exports = function registerHook({ exceptions, services, env }) {
 
+    const lodash = require("lodash");
+
     const { ItemsService } = services;
     const { ServiceUnavailableException } = exceptions;
   
     return {
       "oauth.cas.login.before": async function (payload,{schema, accountability}) {
-        
-        const email = payload.profile.email;
+
+        const path = env[`OAUTH_CAS_PROFILE_EMAIL`] || 'email';
+        const email = lodash.get(payload.profile, path);
 
         //Filter subdomains
         if (email.endsWith("@udl.cat")) {
@@ -14,6 +17,7 @@ module.exports = function registerHook({ exceptions, services, env }) {
             //Force permission to create the user           
             const account = accountability || {};
             account.admin = true;
+
           
             const userService = new ItemsService(
                 "directus_users",

@@ -1,6 +1,6 @@
 {
   "name": "prjmanager",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "directus": "^9.0.0-rc.85",
+    "directus": "^9.0.0-rc.91",
     "pg": "^8.6.0"
   }
   
