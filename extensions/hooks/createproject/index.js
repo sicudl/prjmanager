@@ -74,6 +74,7 @@ module.exports = function registerHook({ exceptions, services, env }) {
                 strategy_axes: straxis_results,
                 applicant_unit: pa_result.applicant_unit,
                 application_responsible: pa_result.application_responsible,
+                status_update_email: pa_result.status_update_email,
                 name: pa_result.name,
               });
             }
