@@ -107,7 +107,8 @@ export default {
 		});
 	},
 	loadStakeholders: function (projectId) {
-		this.system.api.get("/items/stakeholders?limit=-1&?filter[project_id][_eq]="+projectId).then((res) => {
+		
+		this.system.api.get("/items/stakeholders?limit=-1&filter[project_id][_eq]="+projectId).then((res) => {
 			this.selectedStakeholders = [];
 			this.stakeholders = res.data.data;
 		});
