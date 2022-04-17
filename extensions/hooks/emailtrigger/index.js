@@ -1,8 +1,7 @@
-module.exports = function registerHook({ exceptions, services, env }) {
+module.exports = function ({action},{ exceptions, services, env, logger }) {
 
   const { MailService, ItemsService } = services;
   const { ServiceUnavailableException } = exceptions;
-  const logger = require("directus/dist/logger").default;
   const APPLICATION_SCOPE = 1;
   const PROJECT_SCOPE = 2;
   const statusTexts = {
@@ -105,7 +104,7 @@ S'ha introduït una nova sol·licitud de projecte al portal de projectes TIC.</p
   <li>Unitat sol·licitant: ${applicationData.applicant_unit} </li>
   <li>Descripció de la necessitat: <div style="border: 1px solid #333333; padding: 10px;">${applicationData.description_need}</div></li>
 </ul>    
-<p>Podeu veure la sol·licitud a través del portal de projectes TIC a <a href="https://projectestic.udl.cat/admin/collections/project_application/${applicationData.id}">aquí</a></p>
+<p>Podeu veure la sol·licitud a través del portal de projectes TIC a <a href="https://projectestic.udl.cat/admin/collections/project_application/${applicationId}">aquí</a></p>
 <p>Salutacions</p>
 `;
 
@@ -306,47 +305,39 @@ Lamentem comunicar-vos que el projecte amb títol <b>${projectData.name}</b> ha 
     }
   }
 
-  return {
-    "items.create": async function ({
-      collection,
-      item,
-      payload,
-      schema,
-      accountability,
-    }) {
+  action ( 
+    "items.create", async function (
+      {collection, key, payload },
+      {schema, accountability }) {
 
       if (collection === "project_application") {
-        notifyApplicationCreation(schema, accountability, item, payload);
+        notifyApplicationCreation(schema, accountability, key, payload);
       }
 
-    },
-    "items.update": async function ({
-      collection,
-      item,
-      payload,
-      schema,
-      accountability,
-    }) {
+    });
+
+    action("items.update", async function (
+      {collection, keys, payload }, 
+      {schema, accountability }) {
 
       if (collection === "project_application") {
         if (payload.status) {
           if (payload.status === "accepted") {
-            notifyApplicationAccepted(schema, accountability, item);
+            notifyApplicationAccepted(schema, accountability, keys[0]);
           }
           else if (payload.status === "refused") {
-            notifyApplicationRefused(schema, accountability, item);
+            notifyApplicationRefused(schema, accountability, keys[0]);
           }
         }
       }
       else if (collection === "project") {
         if (payload.status) {
           if (!["archived","refused"].includes(payload.status)) {
-            notifyProjectStatusChanged(schema, accountability, item);
+            notifyProjectStatusChanged(schema, accountability, keys[0]);
           } else if (payload.status === "refused") {
-            notifyProjectRefused(schema, accountability, item);
+            notifyProjectRefused(schema, accountability, keys[0]);
           }
         }
       }
-    }
-  };
+    });
 };

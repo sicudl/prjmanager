@@ -97,7 +97,7 @@ export default {
 			project_id: this.selectedProject,
 			recipients : this.selectedStakeholders.map (stakeholder => { return {"stakeholders_id": stakeholder}} ),
 		}
-		this.system.api.post("/items/comunication",comunication).then((res) => {
+		this.api.post("/items/comunication",comunication).then((res) => {
 			this.title ="";
 			this.body=""
 			this.selectedStakeholders = [];
@@ -108,7 +108,7 @@ export default {
 	},
 	loadStakeholders: function (projectId) {
 		
-		this.system.api.get("/items/stakeholders?limit=-1&filter[project_id][_eq]="+projectId).then((res) => {
+		this.api.get("/items/stakeholders?limit=-1&filter[project_id][_eq]="+projectId).then((res) => {
 			this.selectedStakeholders = [];
 			this.stakeholders = res.data.data;
 		});
@@ -119,7 +119,7 @@ export default {
 	  }	
   }
   ,
-  inject: ["system"],
+  inject: ["api"],
   mounted() {
 	//Pre-set the project
 
@@ -133,7 +133,7 @@ export default {
       this.collections = res.data.data;
     });*/
 
-    this.system.api.get("/items/project?limit=-1").then((res) => {
+    this.api.get("/items/project?limit=-1").then((res) => {
       this.projects = res.data.data;
 	  
 	  if (this.$route.query.id) {

@@ -1,4 +1,5 @@
 import ModuleComponent from './module.vue';
+import {useApi} from '@directus/extensions-sdk'
 
 export default {
 	id: 'comunications',
@@ -9,4 +10,7 @@ export default {
 			path: '', component: ModuleComponent,
 		},
 	],
+	setup() {
+		const api = useApi();
+	}
 };

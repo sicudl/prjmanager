@@ -1,18 +1,11 @@
-module.exports = function registerHook({ exceptions, services, env }) {
+module.exports = function ({action}, { exceptions, services, logger }) {
   const collections = ["comunication"];
   const { MailService, ItemsService } = services;
   const { ServiceUnavailableException } = exceptions;
 
-  const logger = require("directus/dist/logger").default;
-
-  return {
-    "items.create": async function ({
-      collection,
-      item,
-      payload,
-      schema,
-      accountability,
-    }) {
+  action("items.create", async function ({
+      collection, key, payload },
+      {schema, accountability }) {
       if (collections.includes(collection)) {
         try {
           //Get the email from selected stakeholders
@@ -50,14 +43,14 @@ module.exports = function registerHook({ exceptions, services, env }) {
             .then((response) => {
               logger.info(
                 "Comunication id " +
-                  item +
+                  key +
                   " was sent. Project ID: " +
                   payload.project_id
               );
             })
             .catch((error) => {
               logger.info(
-                "Error sending a comunication email for item: " + item,
+                "Error sending a comunication email for item: " + key,
                 error
               );
             });
@@ -66,6 +59,5 @@ module.exports = function registerHook({ exceptions, services, env }) {
         } finally {
         }
       }
-    },
-  };
+    });
 };

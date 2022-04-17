@@ -1,19 +1,13 @@
-module.exports = function registerHook({ exceptions, services, env }) {
+module.exports = ({action},{ exceptions, services, env }) => {
   const collections = ["project_application"];
   const { ItemsService } = services;
 
   const { ServiceUnavailableException } = exceptions;
 
-  return {
-    "items.update": async function ({
-      collection,
-      item,
-      payload,
-      schema,
-      accountability,
-    }) {
+  action ("items.update", async function ({payload, keys, collection},{schema,
+      accountability}) {
       if (collections.includes(collection)) {
-        const project_application_id = parseInt(item, 10);
+        const project_application_id = parseInt(keys[0], 10);
 
         //check if in status comes with the payload, if it's accepted look for a project with that application and if it not exists then create one with valueble data.
         if (payload.status && payload.status === "accepted") {
@@ -85,6 +79,5 @@ module.exports = function registerHook({ exceptions, services, env }) {
           }
         }
       }
-    },
-  };
+  });
 };
