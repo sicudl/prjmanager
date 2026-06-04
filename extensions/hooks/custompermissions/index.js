@@ -12,38 +12,57 @@ module.exports = function ({ init }, { env }) {
         if(req.originalUrl === '/settings') { //Hide modules
           const send = res.send;
           res.send = function (body) {
-            let parsedBody = JSON.parse(body);
-            if (parsedBody.data.module_bar) {
-              if ([role.pr_applicant, role.pr_inspector, role.promotor, role.pr_manager].includes (req.accountability.role)) {
-                parsedBody.data.module_bar.find(m => m.id === 'users').enabled = false;
-                parsedBody.data.module_bar.find(m => m.id === 'files').enabled = false;
-                parsedBody.data.module_bar.find(m => m.id === 'docs').enabled = false;
+            let parsedBody;
+            try {
+              parsedBody = typeof body === 'string' ? JSON.parse(body) : body;
+            } catch (err) {
+              return send.apply(this, [body]);
+            }
+
+            if (parsedBody?.data?.module_bar) {
+              if ([role.pr_applicant, role.pr_inspector, role.promotor, role.pr_manager].includes(req.accountability.role)) {
+                const moduleBar = parsedBody.data.module_bar;
+                const hideModule = id => moduleBarfind(m => m.id === id)?.enabled = false;
+
+                hideModule('users');
+                hideModule('files');
+                hideModule('docs');
                 if (role.pr_manager !== req.accountability.role) {
-                    parsedBody.data.module_bar.find(m => m.id === 'comunications').enabled = false;
+                  hideModule('comunications');
                 }
               }
-    
             }
+
             send.apply(this, [JSON.stringify(parsedBody)]);
           };
         } else if (req.originalUrl === '/collections?limit=-1') { //Hide collections
           const send = res.send;
           res.send = function (body) {
-            let parsedBody = JSON.parse(body);
-            if (parsedBody.data) {
-                
-                if ([role.pr_applicant, role.pr_inspector, role.promotor].includes (req.accountability.role)) { 
-                    parsedBody.data.find (m => m.collection === 'promotor').meta.hidden = true;
-                    parsedBody.data.find (m => m.collection === 'strategic_axis').meta.hidden = true;
-                }
- 
-                if ([role.pr_inspector,role.promotor].includes (req.accountability.role)){
-                    parsedBody.data.find (m => m.collection === 'milestone').meta.hidden = true;
-                    parsedBody.data.find (m => m.collection === 'stakeholders').meta.hidden = true;
-                    parsedBody.data.find (m => m.collection === 'workactions').meta.hidden = true;
-                }
-        
-             }
+            let parsedBody;
+            try {
+              parsedBody = typeof body === 'string' ? JSON.parse(body) : body;
+            } catch (err) {
+              return send.apply(this, [body]);
+            }
+
+            if (Array.isArray(parsedBody?.data)) {
+              const hideCollection = collectionId => {
+                const item = parsedBody.data.find(m => m.collection === collectionId);
+                if (item?.meta) item.meta.hidden = true;
+              };
+
+              if ([role.pr_applicant, role.pr_inspector, role.promotor].includes(req.accountability.role)) {
+                hideCollection('promotor');
+                hideCollection('strategic_axis');
+              }
+
+              if ([role.pr_inspector, role.promotor].includes(req.accountability.role)) {
+                hideCollection('milestone');
+                hideCollection('stakeholders');
+                hideCollection('workactions');
+              }
+            }
+
             send.apply(this, [JSON.stringify(parsedBody)]);
           };
         }
