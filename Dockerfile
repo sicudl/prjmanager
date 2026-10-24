@@ -26,15 +26,12 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev \
 	&& mkdir -p database extensions uploads
 
-COPY openssl-legacy.cnf ./
 COPY extensions/hooks/ ./extensions/hooks/
 COPY --from=extension-builder /build/extensions/modules/comunications ./extensions/modules/comunications
 
 RUN chown -R node:node /directus
 
 USER node
-
-ENV OPENSSL_CONF="/directus/openssl-legacy.cnf"
 
 EXPOSE 8055
 
