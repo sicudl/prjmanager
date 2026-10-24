@@ -22,7 +22,10 @@ module.exports = function ({ init }, { env }) {
             if (parsedBody?.data?.module_bar) {
               if ([role.pr_applicant, role.pr_inspector, role.promotor, role.pr_manager].includes(req.accountability.role)) {
                 const moduleBar = parsedBody.data.module_bar;
-                const hideModule = id => moduleBarfind(m => m.id === id)?.enabled = false;
+                const hideModule = id => {
+                  const module = moduleBar.find(m => m.id === id);
+                  if (module) module.enabled = false;
+                };
 
                 hideModule('users');
                 hideModule('files');

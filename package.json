@@ -10,8 +10,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "directus": "^9.23.3"
-    "pg": "^8.6.0"
+    "directus": "9.26.0"
+  },
+  "engines": {
+    "node": "24.22.1"
+  },
+  "allowScripts": {
+    "argon2": true,
+    "esbuild": true,
+    "sharp": true,
+    "sqlite3": true
   }
-  
 }
